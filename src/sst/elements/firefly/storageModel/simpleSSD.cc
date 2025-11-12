@@ -15,8 +15,9 @@ SimpleSSD::SimpleSSD(ComponentId_t id, Params &params)
     m_writeBandwidthPerLane_GBps = params.find<double>("writeBandwidthPerLane_GBps", 0.78125);
     /// 0.78125 GB/s = 25(GBpS) divided by 32 lanes
 
-    int verbosity = params.find<int>("verbosity", 0);
-    m_out.init("[SimpleSSD] ", verbosity, 0, Output::STDOUT);
+    int verboseLevel = params.find<int>("verboseLevel", 0);
+    int verboseMask = params.find<int>("verboseMask", -1);
+    m_out.init("[SimpleSSD] ", verboseLevel, verboseMask, Output::STDOUT);
     registerClock("1GHz", new Clock::Handler2<SimpleSSD, &SimpleSSD::clockTick>(this));
     m_selfLink = configureSelfLink("ReadWriteLatency", "1 ns", new Event::Handler2<SimpleSSD, &SimpleSSD::handleEvent>(this));
 }
