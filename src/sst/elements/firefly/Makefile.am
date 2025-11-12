@@ -160,8 +160,10 @@ libfirefly_la_SOURCES = \
 	nicVirtNic.h \
 	nicUnitPool.h \
 	thingHeap.h \
-	nodePerf.h \
-	pyfirefly.py
+	nodePerf.h \ 
+	storageModel/simpleSSD.h \
+	storageModel/simpleSSD.cc \
+	pyfirefly.py 
 
 libfirefly_la_LDFLAGS = -module -avoid-version
 
