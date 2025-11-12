@@ -1,6 +1,4 @@
 #include "sst_config.h"
-#include <cmath>
-#include <iostream>
 
 #include "simpleSSD.h"
 
@@ -17,9 +15,10 @@ SimpleSSD::SimpleSSD(ComponentId_t id, Params &params)
     m_writeBandwidthPerLane_GBps = params.find<double>("writeBandwidthPerLane_GBps", 0.78125);
     /// 0.78125 GB/s = 25(GBpS) divided by 32 lanes
 
-    m_out.init("[SimpleSSD] ", 4, 0, Output::STDOUT);
+    int verbosity = params.find<int>("verbosity", 0);
+    m_out.init("[SimpleSSD] ", verbosity, 0, Output::STDOUT);
     registerClock("1GHz", new Clock::Handler2<SimpleSSD, &SimpleSSD::clockTick>(this));
-    m_selfLink = configureSelfLink("ReadWriteLatency", "1 ns", new Event::Handler<SimpleSSD>(this, &SimpleSSD::handleEvent));
+    m_selfLink = configureSelfLink("ReadWriteLatency", "1 ns", new Event::Handler2<SimpleSSD, &SimpleSSD::handleEvent>(this));
 }
 
 void SimpleSSD::read(int64_t offset, size_t bytes, const SsdReqCallback &callback)
@@ -36,8 +35,6 @@ void SimpleSSD::handleEvent(SST::Event *ev)
 {
     DelayEvent *event = dynamic_cast<DelayEvent *>(ev);
     assert(event);
-    unsigned int now = getCurrentSimTime(m_selfLink->getDefaultTimeBase());
-    m_out.verbose(CALL_INFO, 1, 0, "ssd: handle event: %x:  %d: \n", event, now);
     event->m_callback();
     delete ev;
     --m_pendingRequests;
@@ -53,8 +50,6 @@ bool SimpleSSD::clockTick(SST::Cycle_t n)
             {
                 Request request = m_pci.lanes.at(i).front();
                 DelayEvent *ev = new DelayEvent(request.callback);
-                unsigned int now = getCurrentSimTime(m_selfLink->getDefaultTimeBase());
-                m_out.verbose(CALL_INFO, 1, 0, "ssd: schedule request: %x: %x:  %d: \n", this, ev, now);
                 m_selfLink->send(request.delay_ns, ev);
                 m_pci.lanes.at(i).pop();
                 ++m_pendingRequests;
