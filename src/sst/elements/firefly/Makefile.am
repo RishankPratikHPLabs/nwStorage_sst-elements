@@ -163,6 +163,8 @@ libfirefly_la_SOURCES = \
 	nodePerf.h \ 
 	storageModel/simpleSSD.h \
 	storageModel/simpleSSD.cc \
+	hadesNetworkIO.h \
+	hadesNetworkIO.cc \
 	pyfirefly.py 
 
 libfirefly_la_LDFLAGS = -module -avoid-version
