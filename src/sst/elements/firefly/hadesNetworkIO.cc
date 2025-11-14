@@ -34,7 +34,6 @@ void HadesNetworkIO::setup()
 void HadesNetworkIO::networkIORead(Hermes::Vaddr dest, uint64_t offset, uint64_t length,
                              bool isBlocking, Callback callback)
 {
-    std::cerr << "[HadesNetwork] network_read" << std::endl;
     m_dbg.verbose(CALL_INFO, 1, 0, "network_read: dest=%lx offset=%lu length=%lu blocking=%d\n", 
                   dest, offset, length, isBlocking);
     callback(0);
@@ -44,7 +43,6 @@ void HadesNetworkIO::networkIORead(Hermes::Vaddr dest, uint64_t offset, uint64_t
 void HadesNetworkIO::networkIOWrite(uint64_t offset, Hermes::Vaddr src, uint64_t length,
                               bool isBlocking, Callback callback)
 {
-    std::cerr << "[HadesNetwork] network_write" << std::endl;
     m_dbg.verbose(CALL_INFO, 1, 0, "network_write: offset=%lu src=%lx length=%lu blocking=%d\n", 
                   offset, src, length, isBlocking);
     callback(0);
