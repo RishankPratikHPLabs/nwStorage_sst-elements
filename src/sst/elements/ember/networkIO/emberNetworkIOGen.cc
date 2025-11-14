@@ -11,17 +11,12 @@
 using namespace SST::Ember;
 
 EmberNetworkIOGenerator::EmberNetworkIOGenerator(ComponentId_t id, Params& params, std::string name) 
-    : EmberGenerator(id, params, name)
+    : EmberGenerator(id, params, name), m_networkIOLib(nullptr)
 {
-    m_networkIOLib = NULL;
-    m_miscLib = NULL;
 }
 
 void EmberNetworkIOGenerator::setup()
 {
     m_networkIOLib = static_cast<EmberNetworkIOLib*>(getLib("networkIO"));
-    m_miscLib = static_cast<EmberMiscLib*>(getLib("misc"));
-    
     assert(m_networkIOLib);
-    assert(m_miscLib);
 }

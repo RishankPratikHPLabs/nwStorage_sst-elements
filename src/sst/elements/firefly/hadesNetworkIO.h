@@ -35,6 +35,10 @@ class HadesNetworkIO : public Hermes::NetworkIO::Interface {
 
     void setup() override;
 
+    std::string getName() override { return "networkIO"; }
+
+    std::string getType() override { return "networkIO"; }
+
     void networkIORead(Hermes::Vaddr dest, uint64_t offset, uint64_t length,
                      bool isBlocking, Callback callback) override;
     

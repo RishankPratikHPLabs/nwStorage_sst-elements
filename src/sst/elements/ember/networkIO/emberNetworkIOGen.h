@@ -6,8 +6,6 @@
 // All rights reserved.
 
 #pragma once
-
-#include "sst/elements/ember/libs/misc.h"
 #include "sst/elements/ember/libs/emberNetworkIOLib.h"
 
 using namespace Hermes;
@@ -24,11 +22,7 @@ public:
 
 protected:
     EmberNetworkIOLib* m_networkIOLib;
-    EmberMiscLib* m_miscLib;
-    
-    // Helper accessors for convenience
     EmberNetworkIOLib& networkIO() { return *m_networkIOLib; }
-    EmberMiscLib& misc() { return *m_miscLib; }
 };
 
 }

@@ -85,6 +85,7 @@ emberParams = {
     "api.0.module" : "firefly.hadesMP",
     "api.1.module" : "firefly.hadesSHMEM",
     "api.2.module" : "firefly.hadesMisc",
+    "api.3.module" : "firefly.hadesNetworkIO",
     'firefly.hadesSHMEM.verboseLevel' : 0,
     'firefly.hadesSHMEM.verboseMask'  : -1,
     'firefly.hadesSHMEM.enterLat_ns'  : 7,
