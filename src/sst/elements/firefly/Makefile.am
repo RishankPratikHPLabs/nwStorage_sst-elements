@@ -160,7 +160,7 @@ libfirefly_la_SOURCES = \
 	nicVirtNic.h \
 	nicUnitPool.h \
 	thingHeap.h \
-	nodePerf.h \ 
+	nodePerf.h \
 	storageModel/simpleSSD.h \
 	storageModel/simpleSSD.cc \
 	hadesNetworkIO.h \
