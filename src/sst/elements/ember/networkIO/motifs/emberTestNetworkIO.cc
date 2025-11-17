@@ -5,7 +5,7 @@
 using namespace SST::Ember;
 
 EmberTestNetworkIOGenerator::EmberTestNetworkIOGenerator(SST::ComponentId_t id, Params& params) 
-    : EmberNetworkIOGenerator(id, params, "TestNetworkIO"), m_phase(1)
+    : EmberNetworkIOGenerator(id, params, "TestNetworkIO"), m_phase(0)
 {
         m_messageSize = params.find<uint32_t>("arg.messageSize", 1024);
         m_iterations = params.find<uint32_t>("arg.iterations", 5);
@@ -23,13 +23,9 @@ bool EmberTestNetworkIOGenerator::generate( std::queue<EmberEvent*>& evQ)
     bool ret = false;
     switch(m_phase) 
     {
-        #if 0 ///Enable after the implemenation of enQ_malloc & reset the default value of m_state = 0 in the constructor
         case 0:
-            enQ_malloc(evQ, &m_localBuffer, m_messageSize);
-            break;
-        #endif
-            
-        case 1:
+            memSetNotBacked();
+            m_localBuffer = memAlloc(m_messageSize);
             enQ_getTime(evQ, &m_startTime);
             for (uint32_t i = 0; i < m_iterations; i++) 
             {
@@ -43,7 +39,7 @@ bool EmberTestNetworkIOGenerator::generate( std::queue<EmberEvent*>& evQ)
             enQ_getTime(evQ, &m_stopTime);
             break;
             
-        case 2:
+        case 1:
             double totalTime = (double)(m_stopTime - m_startTime)/1000000000.0;
             double latency = (totalTime/m_iterations);
             output("message-size %u, iterations %u, total-time %.3lf us\n",
