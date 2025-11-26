@@ -12,9 +12,12 @@
 # two jobs can not have the same NID
 
 [JOB_ID] 1
-[NID_LIST] 0-2
+[NID_LIST] 0-1
+[PARAM] ember:firefly.hadesNetworkIO.storageNodesList=2,3
+[PARAM] ember:firefly.hadesNetworkIO.storageNodeCapacity=1GiB
 [MOTIF] TestNetworkIO iterations=1  messageSize=128
 
 [JOB_ID] 2
-[NID_LIST] 3
+[NID_LIST] 2,3
+[MOTIF_API] HadesNetworkIO
 [MOTIF] Null

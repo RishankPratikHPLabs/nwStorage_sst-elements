@@ -101,8 +101,6 @@ emberParams = {
     'firefly.hadesSHMEM.returnLat_ns' : 7,
     'firefly.hadesNetworkIO.verboseLevel' : 0,
     'firefly.hadesNetworkIO.verboseMask' : -1,
-    'firefly.hadesNetworkIO.nIONodes' : 3,
-    'firefly.hadesNetworkIO.nSSDsPerNode' : 1,
     "verbose" : 0,
 }
 

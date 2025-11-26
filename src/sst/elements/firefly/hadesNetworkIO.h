@@ -5,6 +5,7 @@
 
 #include <sst/core/output.h>
 #include <sst/elements/hermes/networkIOapi.h>
+#include <vector>
 
 namespace SST {
 namespace Firefly {
@@ -23,6 +24,8 @@ class HadesNetworkIO : public Hermes::NetworkIO::Interface {
         SST::Hermes::Interface
     )
     SST_ELI_DOCUMENT_PARAMS(
+        {"storageNodesList", "List of storage nodes Ids used in simulation", ""},
+        {"storageNodeCapacity", "The capacity of a storage node", "1 GiB"},
         {"verboseLevel","Sets the level of debug verbosity","0"},
         {"verboseMask","Sets the debug mask","-1"},
     )
@@ -49,6 +52,10 @@ class HadesNetworkIO : public Hermes::NetworkIO::Interface {
     Hades* m_osPtr;
     VirtNic* m_nicPtr;
     SST::Output m_dbg;
+    std::vector<int> m_storageNodesList;
+    int64_t m_storageNodeCapacity;
+
+    int64_t calcTargetNid(int64_t offset);
 };
 
 } // namespace Firefly

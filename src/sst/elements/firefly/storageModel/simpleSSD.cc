@@ -1,7 +1,6 @@
 #include "sst_config.h"
 
 #include "simpleSSD.h"
-#include <iostream>
 
 using namespace SST;
 using namespace Firefly;
