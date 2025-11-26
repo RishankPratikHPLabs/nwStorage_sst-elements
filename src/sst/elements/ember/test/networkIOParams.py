@@ -61,6 +61,15 @@ nicParams = {
 	"maxRecvMachineQsize" : 100,
 	"maxSendMachineQsize" : 100,
 
+    "useSimpleSSD": 1,
+    "simpleSSD.nSSDsPerNode": 2,
+    "simpleSSD.queuesCountPerSSD": 4,
+    "simpleSSD.readBandwidthPerSSD_GBps": 6.25,
+    "simpleSSD.writeBandwidthPerSSD_GBps": 6.25,
+    "simpleSSD.readOverheadLatency_ns": 500,
+    "simpleSSD.writeOverheadLatency_ns": 500,
+    
+    
     #"numVNs" : 7,
 
     #"getHdrVN" : 1,
@@ -90,6 +99,10 @@ emberParams = {
     'firefly.hadesSHMEM.verboseMask'  : -1,
     'firefly.hadesSHMEM.enterLat_ns'  : 7,
     'firefly.hadesSHMEM.returnLat_ns' : 7,
+    'firefly.hadesNetworkIO.verboseLevel' : 0,
+    'firefly.hadesNetworkIO.verboseMask' : -1,
+    'firefly.hadesNetworkIO.nIONodes' : 3,
+    'firefly.hadesNetworkIO.nSSDsPerNode' : 1,
     "verbose" : 0,
 }
 

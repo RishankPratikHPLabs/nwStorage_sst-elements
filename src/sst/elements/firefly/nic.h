@@ -34,6 +34,8 @@
 #include "memoryModel/simpleMemoryModel.h"
 #include "memoryModel/detailedInterface.h"
 
+#include "storageModel/simpleSSD.h"
+
 #define CALL_INFO_LAMBDA     __LINE__, __FILE__
 
 namespace SST {
@@ -124,6 +126,8 @@ public:
         { "dmaContentionMult", "set the DMA contention mult", "100"},
 
         { "useDetailed", "Use detailed compute model", "false"},
+
+        { "useSimpleSSD", "Use simple SSD model for Network I/O simulations", "false"},
     )
 
 	/* PARAMS
@@ -665,6 +669,13 @@ struct X {
     int m_shmemPutLargeVN;
     int m_shmemPutSmallVN;
     size_t m_shmemPutThresholdLength;
+
+  private:
+    SimpleSSD* m_simpleSSDPtr;
+
+  public:
+    SimpleSSD* getSimpleSSDPtr() { return m_simpleSSDPtr; }
+
 };
 
 } // namesapce Firefly

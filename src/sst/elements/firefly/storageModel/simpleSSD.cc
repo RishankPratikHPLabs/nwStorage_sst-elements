@@ -1,6 +1,7 @@
 #include "sst_config.h"
 
 #include "simpleSSD.h"
+#include <iostream>
 
 using namespace SST;
 using namespace Firefly;
@@ -8,12 +9,18 @@ using namespace Firefly;
 SimpleSSD::SimpleSSD(ComponentId_t id, Params &params)
     : SimpleSSDAPI(id), m_pendingRequests(0) 
 {
-    m_pci.lanes.resize(params.find<int>("pcieLanesCount", 32));
+    int nSSDsPerNode = params.find<int>("nSSDsPerNode", 1);
+    int nQueuesPerSSD = params.find<int>("queuesCountPerSSD", 4);
+    m_bus.lanes.resize(nQueuesPerSSD);
+
     m_readOverheadLatency_ns = params.find<int64_t>("readOverheadLatency_ns", 500);
     m_writeOverheadLatency_ns = params.find<int64_t>("writeOverheadLatency_ns", 500);
-    m_readBandwidthPerLane_GBps = params.find<double>("readBandwidthPerLane_GBps", 0.78125);
-    m_writeBandwidthPerLane_GBps = params.find<double>("writeBandwidthPerLane_GBps", 0.78125);
-    /// 0.78125 GB/s = 25(GBpS) divided by 32 lanes
+
+    double readBandwidthPerSSD = params.find<double>("readBandwidthPerSSD_GBps", 6.25);
+    m_readBandwidthPerQueue_GBps = readBandwidthPerSSD*nSSDsPerNode/nQueuesPerSSD;
+
+    double writeBandwidthPerSSD = params.find<double>("writeBandwidthPerSSD_GBps", 6.25);
+    m_writeBandwidthPerQueue_GBps = writeBandwidthPerSSD*nSSDsPerNode/nQueuesPerSSD;
 
     int verboseLevel = params.find<int>("verboseLevel", 0);
     int verboseMask = params.find<int>("verboseMask", -1);
@@ -24,12 +31,12 @@ SimpleSSD::SimpleSSD(ComponentId_t id, Params &params)
 
 void SimpleSSD::read(int64_t offset, size_t bytes, const SsdReqCallback &callback)
 {
-    enqueueRequest(offset, bytes, m_readBandwidthPerLane_GBps, m_readOverheadLatency_ns, callback);
+    enqueueRequest(offset, bytes, m_readBandwidthPerQueue_GBps, m_readOverheadLatency_ns, callback);
 }
 
 void SimpleSSD::write(int64_t offset, size_t bytes, const SsdReqCallback &callback)
 {
-    enqueueRequest(offset, bytes, m_writeBandwidthPerLane_GBps, m_writeOverheadLatency_ns, callback);
+    enqueueRequest(offset, bytes, m_writeBandwidthPerQueue_GBps, m_writeOverheadLatency_ns, callback);
 }
 
 void SimpleSSD::handleEvent(SST::Event *ev)
@@ -45,14 +52,14 @@ bool SimpleSSD::clockTick(SST::Cycle_t n)
 {
     if (m_pendingRequests == 0)
     {
-        for (int i = 0; i < m_pci.lanes.size(); ++i)
+        for (int i = 0; i < m_bus.lanes.size(); ++i)
         {
-            if (!m_pci.lanes.at(i).empty())
+            if (!m_bus.lanes.at(i).empty())
             {
-                Request request = m_pci.lanes.at(i).front();
+                Request request = m_bus.lanes.at(i).front();
                 DelayEvent *ev = new DelayEvent(request.callback);
                 m_selfLink->send(request.delay_ns, ev);
-                m_pci.lanes.at(i).pop();
+                m_bus.lanes.at(i).pop();
                 ++m_pendingRequests;
             }
         }
@@ -73,7 +80,7 @@ void SimpleSSD::enqueueRequest(const int64_t offset, const size_t bytes, const d
     request.delay_ns = this->calcDelay_ns(bytes, bandwidth_GBps, overheadLatency_ns);
     request.offset = offset;
     request.callback = callback;
-    m_pci.currentLane %= m_pci.lanes.size();
-    m_pci.lanes.at(m_pci.currentLane).push(request);
-    m_pci.currentLane++;
+    m_bus.currentLane %= m_bus.lanes.size();
+    m_bus.lanes.at(m_bus.currentLane).push(request);
+    m_bus.currentLane++;
 }

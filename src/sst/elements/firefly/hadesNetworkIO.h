@@ -46,7 +46,8 @@ class HadesNetworkIO : public Hermes::NetworkIO::Interface {
                       bool isBlocking, Callback callback) override;
 
   private:
-    VirtNic* m_nic;
+    Hades* m_osPtr;
+    VirtNic* m_nicPtr;
     SST::Output m_dbg;
 };
 

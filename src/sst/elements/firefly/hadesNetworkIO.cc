@@ -10,7 +10,7 @@ using namespace SST::Firefly;
 
 HadesNetworkIO::HadesNetworkIO(ComponentId_t id, Params& params) :
     Hermes::NetworkIO::Interface(id),
-    m_nic(NULL)
+    m_nicPtr(NULL)
 {
     m_dbg.init("@t:HadesNetwork::@p():@l ",
         params.find<uint32_t>("verboseLevel",0),
@@ -21,9 +21,9 @@ HadesNetworkIO::HadesNetworkIO(ComponentId_t id, Params& params) :
 
 void HadesNetworkIO::setOS( Hermes::OS* os )
 {
-    Hades* hades = dynamic_cast<Hades*>(os);
-    assert(hades);
-    m_nic = hades->getNic();
+    m_osPtr = dynamic_cast<Hades*>(os);
+    assert(m_osPtr);
+    m_nicPtr = m_osPtr->getNic();
 }
 
 void HadesNetworkIO::setup()

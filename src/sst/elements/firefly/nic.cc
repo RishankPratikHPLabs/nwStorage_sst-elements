@@ -309,6 +309,13 @@ Nic::Nic(ComponentId_t id, Params &params) :
 	    m_useDetailedCompute = params.find<bool>("useDetailed", false );
     }
 
+    if(params.find<int>("useSimpleSSD", 0))
+    {
+        Params ssdParams = params.get_scoped_params("simpleSSD");
+        m_simpleSSDPtr = dynamic_cast<SimpleSSD*>(loadAnonymousSubComponent<SimpleSSDAPI>("firefly.SimpleSSD","SimpleSSD", 0, ComponentInfo::SHARE_NONE, ssdParams ));
+        assert(m_simpleSSDPtr && "Failed to load SimpleSSD subcomponent in NIC\n");
+    }
+
 	m_sentByteCount =     registerStatistic<uint64_t>("sentByteCount");
 	m_rcvdByteCount =     registerStatistic<uint64_t>("rcvdByteCount");
 	m_sentPkts = 	      registerStatistic<uint64_t>("sentPkts");

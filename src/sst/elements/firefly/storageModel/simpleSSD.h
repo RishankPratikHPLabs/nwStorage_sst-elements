@@ -21,7 +21,7 @@ namespace SST
             SsdReqCallback callback;
         };
         
-        struct PCIe
+        struct Bus
         {
             std::vector<std::queue<Request>> lanes;
             int currentLane = 0;
@@ -48,8 +48,8 @@ namespace SST
             virtual int64_t calcDelay_ns(size_t bytes, double bandwidth, int64_t latency) = 0;
 
         protected:
-            /// An instance of PCIe bus connected to SSD
-            PCIe m_pci;
+            /// An instance of SSD bus abstracting connection to NIC
+            Bus m_bus;
 
             /// Overhead latency used to tune SSD read calls simulations with hardware
             int64_t m_readOverheadLatency_ns;
@@ -57,11 +57,11 @@ namespace SST
             /// Overhead latency used to tune SSD write calls simulations with hardware
             int64_t m_writeOverheadLatency_ns;
 
-            /// SSD's read bandwidth per PCIe lane
-            double m_readBandwidthPerLane_GBps;
+            /// SSD's read bandwidth per queue
+            double m_readBandwidthPerQueue_GBps;
             
-            /// SSD's read bandwidth per PCIe lane
-            double m_writeBandwidthPerLane_GBps;
+            /// SSD's read bandwidth per queue
+            double m_writeBandwidthPerQueue_GBps;
         };
 
         class SimpleSSD : public SimpleSSDAPI
@@ -75,9 +75,10 @@ namespace SST
                 "A simple server model to mimic SSD",
                 SST::Firefly::SimpleSSDAPI)
 
-            SST_ELI_DOCUMENT_PARAMS({"pcieLanesCount", "The number of parallel paths", "4"},
-                                    {"readBandwidthPerLane_GBps", "", "0.78125"}, 
-                                    {"writeBandwidthPerLane_GBps", "", "0.78125"}, 
+            SST_ELI_DOCUMENT_PARAMS({"nSSDsPerNode","The number of SSDs to simulate", "1"},
+                                    {"queuesCountPerSSD", "The number of parallel paths per SSD", "4"},
+                                    {"readBandwidthPerSSD_GBps", "", "6.25"}, 
+                                    {"writeBandwidthPerSSD_GBps", "", "6.25"}, 
                                     {"readOverheadLatency_ns", "Latency(ns) used for tuning simulations to hardware experiments", "500"},
                                     {"writeOverheadLatency_ns", "Latency(ns) used for tuning simulations to hardware experiments", "500"})
             
