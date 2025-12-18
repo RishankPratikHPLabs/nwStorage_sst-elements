@@ -11,7 +11,6 @@ EmberTestNetworkIOGenerator::EmberTestNetworkIOGenerator(SST::ComponentId_t id, 
         m_iterations = params.find<uint32_t>("arg.iterations", 5);
         m_opType = params.find<std::string>("arg.op", "write");
         m_fileSize = params.find<uint64_t>("arg.fileSize", 10485760);  // 10MB default
-        m_blocking = params.find<bool>("arg.blocking", true);
         
         m_rng = new SST::RNG::MarsagliaRNG();
         m_startTime = 0;
@@ -26,15 +25,17 @@ bool EmberTestNetworkIOGenerator::generate( std::queue<EmberEvent*>& evQ)
         case 0:
             memSetNotBacked();
             m_localBuffer = memAlloc(m_messageSize);
+            shmem().init(evQ);
+            enQ_barrier_all(evQ);
             enQ_getTime(evQ, &m_startTime);
             for (uint32_t i = 0; i < m_iterations; i++) 
             {
                 uint64_t offset = m_rng->generateNextUInt64() % m_fileSize;
                 
                 if (m_opType == "read") 
-                    networkIO().networkIORead(evQ, m_localBuffer, offset, m_messageSize, m_blocking);
+                    networkIO().networkIORead(evQ, m_localBuffer, offset, m_messageSize);
                 else 
-                    networkIO().networkIOWrite(evQ, offset, m_localBuffer, m_messageSize, m_blocking);
+                    networkIO().networkIOWrite(evQ, offset, m_localBuffer, m_messageSize);
             }
             enQ_getTime(evQ, &m_stopTime);
             break;

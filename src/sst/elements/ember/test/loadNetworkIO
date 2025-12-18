@@ -11,13 +11,19 @@
 # you can have multiple jobs
 # two jobs can not have the same NID
 
+[VAR] TOTAL_NODES=4
+[VAR] COMPUTE_OFFSET=0
+[VAR] COMPUTE_NODES=2
+[VAR] SSD_START_NODE=2
+[VAR] SSD_NODES=2
+
 [JOB_ID] 1
-[NID_LIST] 0-1
-[PARAM] ember:firefly.hadesNetworkIO.storageNodesList=2,3
+[NID_LIST] generateNidList=generateNidListRange({COMPUTE_OFFSET},{COMPUTE_NODES})
+[PARAM] ember:firefly.hadesNetworkIO.ssd_start_node={SSD_START_NODE}
+[PARAM] ember:firefly.hadesNetworkIO.numStorageNodes={SSD_NODES}
 [PARAM] ember:firefly.hadesNetworkIO.storageNodeCapacity=1GiB
-[MOTIF] TestNetworkIO iterations=1  messageSize=128
+[MOTIF] TestNetworkIO iterations=1  messageSize=1000 op=write
 
 [JOB_ID] 2
-[NID_LIST] 2,3
-[MOTIF_API] HadesNetworkIO
+[NID_LIST] generateNidList=generateNidListRange({SSD_START_NODE},{SSD_NODES})
 [MOTIF] Null

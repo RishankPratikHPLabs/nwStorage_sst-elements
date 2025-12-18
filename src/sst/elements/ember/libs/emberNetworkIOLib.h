@@ -1,10 +1,3 @@
-// Copyright 2009-2025 NTESS. Under the terms
-// of Contract DE-NA0003525 with NTESS, the U.S.
-// Government retains certain rights in this software.
-//
-// Copyright (c) 2009-2025, NTESS
-// All rights reserved.
-
 #pragma once
 
 #include "sst/elements/ember/embergen.h"
@@ -33,14 +26,14 @@ public:
 
     EmberNetworkIOLib(Params& params) {}
 
-    void networkIORead(std::queue<EmberEvent*>& q, Hermes::MemAddr dest, uint64_t offset, uint64_t length, bool blocking = true)
+    void networkIORead(std::queue<EmberEvent*>& q, Hermes::MemAddr dest, uint64_t offset, uint64_t length)
     {
-        q.push(new EmberNetworkIOReadEvent(api(), m_output, dest, offset, length, blocking));
+        q.push(new EmberNetworkIOReadEvent(api(), m_output, dest, offset, length));
     }
 
-    void networkIOWrite(std::queue<EmberEvent*>& q, uint64_t offset, Hermes::MemAddr src, uint64_t length, bool blocking = true)
+    void networkIOWrite(std::queue<EmberEvent*>& q, uint64_t offset, Hermes::MemAddr src, uint64_t length)
     {
-        q.push(new EmberNetworkIOWriteEvent(api(), m_output, offset, src, length, blocking));
+        q.push(new EmberNetworkIOWriteEvent(api(), m_output, offset, src, length));
     }
     
 private:

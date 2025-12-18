@@ -1,6 +1,3 @@
-// Copyright 2013-2025 NTESS.
-// All rights reserved.
-
 #pragma once
 
 #include <sst/core/output.h>
@@ -43,16 +40,18 @@ class HadesNetworkIO : public Hermes::NetworkIO::Interface {
     std::string getType() override { return "networkIO"; }
 
     void networkIORead(Hermes::Vaddr dest, uint64_t offset, uint64_t length,
-                     bool isBlocking, Callback callback) override;
+                      Callback callback) override;
     
     void networkIOWrite(uint64_t offset, Hermes::Vaddr src, uint64_t length,
-                      bool isBlocking, Callback callback) override;
+                       Callback callback) override;
 
   private:
     Hades* m_osPtr;
     VirtNic* m_nicPtr;
     SST::Output m_dbg;
     std::vector<int> m_storageNodesList;
+    int64_t m_numSsdNodes;
+    int64_t m_ssd_start_node;
     int64_t m_storageNodeCapacity;
 
     int64_t calcTargetNid(int64_t offset);

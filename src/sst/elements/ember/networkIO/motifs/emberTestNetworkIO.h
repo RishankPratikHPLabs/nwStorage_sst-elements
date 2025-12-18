@@ -1,10 +1,3 @@
-// Copyright 2009-2025 NTESS. Under the terms
-// of Contract DE-NA0003525 with NTESS, the U.S.
-// Government retains certain rights in this software.
-//
-// Copyright (c) 2009-2025, NTESS
-// All rights reserved.
-
 #pragma once
 
 #include <strings.h>
@@ -30,8 +23,7 @@ public:
         {"arg.messageSize","Message size in bytes","1024"},
         {"arg.iterations","Number of iterations to perform","1"},
         {"arg.op","Operation type: read or write","write"},
-        {"arg.fileSize","Storage file size in bytes","10485760"},
-        {"arg.blocking","Use blocking operations","true"}
+        {"arg.fileSize","Storage file size in bytes","10485760"}
     )
 
     EmberTestNetworkIOGenerator(SST::ComponentId_t id, Params& params);
@@ -49,7 +41,6 @@ private:
     uint32_t m_messageSize;          // Size of each read/write operation
     uint32_t m_iterations;           // Number of operations to perform
     uint64_t m_fileSize;             // Total file size for offset generation
-    bool m_blocking;                 // Blocking vs non-blocking operations
     std::string m_opType;            // Operation type: "read" or "write"
     
     // Runtime state

@@ -165,6 +165,11 @@ libfirefly_la_SOURCES = \
 	storageModel/simpleSSD.cc \
 	hadesNetworkIO.h \
 	hadesNetworkIO.cc \
+	nicNetworkSendEntry.h \
+	nicNetworkIO.cc \
+	nicNetworkIO.h \
+	nicNetworkIOStream.cc \
+	nicNetworkIOStream.h \
 	pyfirefly.py 
 
 libfirefly_la_LDFLAGS = -module -avoid-version

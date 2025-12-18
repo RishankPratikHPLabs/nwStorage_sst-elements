@@ -1,11 +1,7 @@
-// Copyright 2009-2025 NTESS. Under the terms
-// of Contract DE-NA0003525 with NTESS, the U.S.
-// Government retains certain rights in this software.
-//
-// Copyright (c) 2009-2025, NTESS
-// All rights reserved.
-
 #pragma once
+#include "sst/elements/ember/embergen.h"
+#include "sst/elements/ember/libs/emberLib.h"
+#include "sst/elements/ember/libs/emberShmemLib.h"
 #include "sst/elements/ember/libs/emberNetworkIOLib.h"
 
 using namespace Hermes;
@@ -21,8 +17,18 @@ public:
     virtual void setup();
 
 protected:
+    EmberShmemLib* m_shmemLib;
+    
+    
     EmberNetworkIOLib* m_networkIOLib;
     EmberNetworkIOLib& networkIO() { return *m_networkIOLib; }
+
+    EmberShmemLib& shmem() { return *m_shmemLib; }
+    
+    // Barrier macro (same as EmberShmemGen)
+    #define enQ_barrier_all shmem().barrier_all
+    #define enQ_malloc shmem().malloc
+    #define enQ_my_pe shmem().my_pe
 };
 
 }

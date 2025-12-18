@@ -27,6 +27,7 @@
 #include <sst/core/link.h>
 
 #include "sst/elements/hermes/shmemapi.h"
+#include "sst/elements/hermes/networkIOapi.h"
 #include "sst/elements/thornhill/detailedCompute.h"
 #include "ioVec.h"
 #include "merlinEvent.h"
@@ -55,6 +56,7 @@ namespace Firefly {
 #define NIC_DBG_RECV_STREAM  (1<<8)
 #define NIC_DBG_RECV_MOVE    (1<<9)
 #define NIC_DBG_LINK_CTRL    (1<<10)
+#define NIC_DBG_NETWORKIO      (1<<11)
 
 class Nic : public SST::Component  {
 
@@ -210,12 +212,17 @@ public:
 private:
 
     struct __attribute__ ((packed)) MsgHdr {
-        enum Op : unsigned char { Msg, Rdma, Shmem } op;
+        enum Op : unsigned char { Msg, Rdma, Shmem, NetworkIO } op;
     };
 
     struct __attribute__ ((packed)) MatchMsgHdr {
         size_t len;
         int    tag;
+    };
+
+    struct __attribute__ ((packed)) NetworkIOMsgHdr {
+        enum Op { Read, Write };
+        unsigned char op;
     };
 
     struct __attribute__ ((packed)) ShmemMsgHdr {
@@ -327,12 +334,14 @@ private:
 	};
 
 
+    #include "nicNetworkIO.h"
     #include "nicVirtNic.h"
     #include "nicShmem.h"
     #include "nicShmemMove.h"
     #include "nicEntryBase.h"
     #include "nicSendEntry.h"
     #include "nicShmemSendEntry.h"
+    #include "nicNetworkIOSendEntry.h"
     #include "nicRecvEntry.h"
     #include "nicSendMachine.h"
     #include "nicRecvMachine.h"
@@ -523,6 +532,7 @@ struct X {
 	DetailedInterface* m_detailedInterface;
 	bool m_useDetailedCompute;
     Shmem* m_shmem;
+    NetworkIO* m_networkIO;
 	SimTime_t m_nic2host_lat_ns;
 	SimTime_t m_shmemRxDelay_ns;
 

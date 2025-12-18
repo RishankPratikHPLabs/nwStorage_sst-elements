@@ -179,6 +179,8 @@ Nic::Nic(ComponentId_t id, Params &params) :
 
 	Params shmemParams = params.get_scoped_params( "shmem" );
     m_shmem = new Shmem( *this, shmemParams, m_myNodeId, m_num_vNics, m_dbg, getDelay_ns(), getDelay_ns() );
+    Params networkIOParams = params.get_scoped_params( "network" );
+    m_networkIO = new NetworkIO( *this, networkIOParams, m_dbg );
 	size_t FAM_memSizeBytes = params.find<SST::UnitAlgebra>("FAM_memSize" ).getRoundedValue();
 	if ( FAM_memSizeBytes ) {
 		if ( printConfig ) {
@@ -335,6 +337,7 @@ Nic::Nic(ComponentId_t id, Params &params) :
 Nic::~Nic()
 {
 	delete m_shmem;
+    delete m_networkIO;
 	delete m_unitPool;
  	delete m_linkSendWidget;
 	delete m_linkRecvWidget;
@@ -399,6 +402,10 @@ void Nic::handleVnicEvent( Event* ev, int id )
 		m_shmem->handleEvent( static_cast<NicShmemCmdEvent*>(event), id );
 		break;
 
+      case NicCmdBaseEvent::NetworkIO:
+		m_networkIO->handleEvent( static_cast<NicNetworkIOCmdEvent*>(event), id );
+		break;
+
 	  default:
 		assert(0);
 	}
@@ -458,6 +465,9 @@ void Nic::handleVnicEvent2( Event* ev, int id )
     case NicCmdBaseEvent::Shmem:
         m_shmem->handleNicEvent2( static_cast<NicShmemCmdEvent*>(event), id );
         break;
+      case NicCmdBaseEvent::NetworkIO:
+		m_networkIO->handleEvent( static_cast<NicNetworkIOCmdEvent*>(event), id );
+		break;
     default:
         assert(0);
     }
