@@ -48,7 +48,6 @@ void HadesNetworkIO::networkIORead(Hermes::Vaddr dest, uint64_t offset, uint64_t
     m_dbg.verbose(CALL_INFO, 1, 0, "network_read: dest=%lx offset=%lu length=%lu \n", 
                   dest, offset, length);
     int targetNid = calcTargetNid(offset);
-    callback(0);
     m_nicPtr->networkIORead(targetNid, dest, length, callback);
 }
 
@@ -57,7 +56,6 @@ void HadesNetworkIO::networkIOWrite(uint64_t offset, Hermes::Vaddr src, uint64_t
     m_dbg.verbose(CALL_INFO, 1, 0, "network_write: offset=%lu src=%lx length=%lu \n", 
                   offset, src, length);
     int targetNid = calcTargetNid(offset);
-    callback(0);
     m_nicPtr->networkIOWrite(targetNid, src, length, callback);
 
 }
