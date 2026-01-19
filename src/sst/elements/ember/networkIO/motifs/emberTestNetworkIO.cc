@@ -25,8 +25,6 @@ bool EmberTestNetworkIOGenerator::generate( std::queue<EmberEvent*>& evQ)
         case 0:
             memSetNotBacked();
             m_localBuffer = memAlloc(m_messageSize);
-            shmem().init(evQ);
-            enQ_barrier_all(evQ);
             enQ_getTime(evQ, &m_startTime);
             for (uint32_t i = 0; i < m_iterations; i++) 
             {
